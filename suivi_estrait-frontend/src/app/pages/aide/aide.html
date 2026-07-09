@@ -1,0 +1,46 @@
+<div class="aide-page">
+  <div class="aide-container">
+
+    <!-- Header -->
+    <div class="aide-header">
+      <span class="badge">ASSISTANCE 24H/7</span>
+      <h1>Besoin d'aide pour votre dossier ?</h1>
+      <p>Notre équipe et nos outils automatisés vous accompagnent pas à pas.</p>
+    </div>
+
+    <!-- Cards -->
+    <div class="aide-cards">
+      <div class="aide-card">
+        <div class="card-icon">💬</div>
+        <h3>Assistant Gadiaga</h3>
+        <p>Posez vos questions en français ou en Wolof pour vos pièces justificatives.</p>
+        <button class="btn-discuss">Discuter en ligne</button>
+      </div>
+
+      <div class="aide-card">
+        <div class="card-icon">▶️</div>
+        <h3>Guides Vidéos</h3>
+        <p>Comprenez en vidéo comment scanner vos documents depuis votre téléphone.</p>
+        <button class="btn-video">Voir les vidéos</button>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-list">
+      <div
+        class="faq-item"
+        *ngFor="let faq of faqs; let i = index"
+        [class.open]="faq.open"
+        (click)="toggleFaq(i)">
+        <div class="faq-header">
+          <span class="faq-question">{{ faq.question }}</span>
+          <span class="faq-icon">{{ faq.open ? '▲' : '▼' }}</span>
+        </div>
+        <div class="faq-answer" *ngIf="faq.open">
+          <p>{{ faq.answer }}</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

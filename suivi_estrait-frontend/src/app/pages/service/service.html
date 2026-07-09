@@ -1,0 +1,50 @@
+<div class="service-page">
+  <div class="service-container">
+
+    <!-- Header -->
+    <div class="service-header">
+      <span class="catalogue-badge">CATALOGUE OFFICIEL</span>
+      <h1>Nos services administratifs</h1>
+      <p>Suivez vos démarches officielles en ligne en toute sécurité depuis l'étranger.</p>
+    </div>
+
+    <!-- Recherche -->
+    <div class="service-search">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        placeholder="Rechercher un document (ex: Casier...)">
+    </div>
+
+    <!-- Catégories -->
+    <div class="service-categories">
+      <button
+        *ngFor="let cat of categories"
+        [class.active]="activeCategory === cat"
+        (click)="setCategory(cat)">
+        {{ cat }}
+      </button>
+    </div>
+
+    <!-- Grille services -->
+    <div class="service-grid">
+      <div class="service-card" *ngFor="let service of filteredServices">
+        <div class="card-icon">{{ service.icon }}</div>
+        <h3>{{ service.title }}</h3>
+        <p class="card-description">{{ service.description }}</p>
+        <div class="card-footer">
+          <div class="card-left">
+            <span class="card-price">{{ service.price }}</span>
+            <span class="card-delai">⏱ {{ service.delai }}</span>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn-commencer">Commencer</button>
+          <button class="btn-voir">Voir Plus</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
