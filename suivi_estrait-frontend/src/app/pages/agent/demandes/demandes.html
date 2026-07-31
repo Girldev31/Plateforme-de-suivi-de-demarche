@@ -1,0 +1,112 @@
+<div class="demandes-page">
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon blue">
+        <span class="material-icons">inbox</span>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats.total }}</span>
+        <span class="stat-label">Total demandes</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">
+        <span class="material-icons">fiber_new</span>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats.nouvelles }}</span>
+        <span class="stat-label">Nouvelles</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon orange">
+        <span class="material-icons">pending</span>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats.enCours }}</span>
+        <span class="stat-label">En cours</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon red">
+        <span class="material-icons">warning</span>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats.aCompleter }}</span>
+        <span class="stat-label">À compléter</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>File d'attente des demandes</h1>
+      <p>Traitez les demandes dans l'ordre de priorité.</p>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="search-box">
+      <span class="material-icons">search</span>
+      <input type="text" [(ngModel)]="search" placeholder="Rechercher (réf, nom, document)">
+    </div>
+    <div class="filters">
+      <button
+        *ngFor="let f of filters"
+        [class.active]="activeFilter === f"
+        (click)="setFilter(f)">
+        {{ f }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="demandes-table">
+    <div class="table-header">
+      <span>Document</span>
+      <span>Citoyen</span>
+      <span>Pays</span>
+      <span>Date</span>
+      <span>Statut</span>
+      <span>Priorité</span>
+      <span>Action</span>
+    </div>
+
+    <div
+      class="table-row"
+      *ngFor="let d of filteredDemandes"
+      (click)="voirDetail(d.id)">
+      <div class="doc-cell">
+        <div class="doc-icon-sm">
+          <span class="material-icons">{{ d.icon }}</span>
+        </div>
+        <div>
+          <p class="doc-titre">{{ d.titre }}</p>
+          <p class="doc-ref">{{ d.id }}</p>
+        </div>
+      </div>
+      <span class="citoyen">{{ d.citoyen }}</span>
+      <span class="pays">
+        <span class="material-icons" style="font-size:14px">location_on</span>
+        {{ d.pays }}
+      </span>
+      <span class="date">{{ d.date }}</span>
+      <span class="statut-badge" [class]="d.statutColor">{{ d.statut }}</span>
+      <span class="priorite-badge" [class]="d.priorite">{{ d.priorite }}</span>
+      <button class="btn-traiter" (click)="voirDetail(d.id); $event.stopPropagation()">
+        Traiter
+        <span class="material-icons">arrow_forward</span>
+      </button>
+    </div>
+
+    <div class="empty-state" *ngIf="filteredDemandes.length === 0">
+      <span class="material-icons">inbox</span>
+      <p>Aucune demande trouvée.</p>
+    </div>
+  </div>
+
+</div>

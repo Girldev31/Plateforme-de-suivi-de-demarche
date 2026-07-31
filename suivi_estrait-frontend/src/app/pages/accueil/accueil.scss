@@ -254,9 +254,9 @@
 
   &-image {
     img {
-      width: 100%;
+      width: 125%;
       border-radius: 12px;
-      border: 1px solid #1f2937;
+      
     }
   }
 }
@@ -299,9 +299,20 @@
     transform: translateY(-4px);
   }
 
-  .doc-icon {
-    font-size: 32px;
+ .doc-icon {
+    width: 44px;
+    height: 44px;
+    background: rgba(0, 208, 132, 0.1);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 16px;
+
+    .material-icons {
+      color: #00d084;
+      font-size: 22px;
+    }
   }
 
   h4 {

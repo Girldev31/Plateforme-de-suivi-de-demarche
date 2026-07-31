@@ -1,1 +1,36 @@
-<p>login works!</p>
+<div class="auth-page">
+  <div class="auth-left">
+    <div class="auth-logo">
+       <img src="assets/images/logo.png" alt="SénégalAdmin" class="logo-img" routerLink="/accueil">
+    </div>
+    <div class="auth-branding">
+      <h1>Créez votre compte<br><span class="highlight">TÉRANGA</span></h1>
+      <p>Connectez-vous à la plateforme officielle pour gérer vos documents administratifs et consulaires en toute sécurité.</p>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-form-container">
+      <h2>Se Connecter</h2>
+      <p class="form-subtitle">Entrez vos accès pour accéder à vos espaces.</p>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="email" placeholder="votre-adresse@email.com">
+      </div>
+
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" [(ngModel)]="password" placeholder="••••••••">
+        <a class="forgot-link">Mot de passe oublié ?</a>
+      </div>
+
+      <button class="btn-submit">Se Connecter</button>
+
+      <p class="form-footer">
+        Vous n'avez pas de compte ?
+        <a routerLink="/register" class="link-switch">Inscrivez-vous</a>
+      </p>
+    </div>
+  </div>
+</div>
