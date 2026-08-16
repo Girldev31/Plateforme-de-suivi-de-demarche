@@ -20,7 +20,7 @@ import { filter } from 'rxjs/operators';
   `
 })
 export class AppComponent {
-  showLayout = true;
+  showLayout = false;
   hideOn = ['/login', '/register', '/chatbot', '/user', '/agent', '/admin'];
 
   constructor(private router: Router) {

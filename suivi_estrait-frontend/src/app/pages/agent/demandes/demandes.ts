@@ -1,20 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
-interface Demande {
-  id: string;
-  icon: string;
-  titre: string;
-  statut: string;
-  statutColor: string;
-  citoyen: string;
-  pays: string;
-  date: string;
-  prix: string;
-  priorite: string;
-}
+import { DemandeService } from '../../../core/demande';
 
 @Component({
   selector: 'app-demandes',
@@ -23,98 +11,83 @@ interface Demande {
   templateUrl: './demandes.html',
   styleUrl: './demandes.scss'
 })
-export class Demandes {
+export class Demandes implements OnInit {
   search = '';
   activeFilter = 'Toutes';
-  filters = ['Toutes', 'Nouvelle', 'En cours', 'À compléter', 'Validée', 'Rejetée'];
+  filters = ['Toutes', 'soumise', 'en_instruction', 'a_completer', 'validee', 'rejetee'];
+  demandes: any[] = [];
+  loading = false;
 
-  demandes: Demande[] = [
-    {
-      id: 'TD-2026-A41C8',
-      icon: 'description',
-      titre: 'Extrait de naissance',
-      statut: 'Nouvelle',
-      statutColor: 'blue',
-      citoyen: 'Awa Diop',
-      pays: 'France',
-      date: '02/07/2026',
-      prix: '5 000 FCFA',
-      priorite: 'haute'
-    },
-    {
-      id: 'TD-2026-B72F1',
-      icon: 'gavel',
-      titre: 'Casier judiciaire (Bulletin n°3)',
-      statut: 'En cours',
-      statutColor: 'orange',
-      citoyen: 'Ibrahima Sarr',
-      pays: 'USA',
-      date: '01/07/2026',
-      prix: '7 500 FCFA',
-      priorite: 'normale'
-    },
-    {
-      id: 'TD-2026-C09K4',
-      icon: 'home',
-      titre: 'Certificat de résidence',
-      statut: 'À compléter',
-      statutColor: 'red',
-      citoyen: 'Mariama Faye',
-      pays: 'Canada',
-      date: '30/06/2026',
-      prix: '3 500 FCFA',
-      priorite: 'haute'
-    },
-    {
-      id: 'TD-2026-D55R2',
-      icon: 'favorite',
-      titre: 'Certificat de mariage',
-      statut: 'Nouvelle',
-      statutColor: 'blue',
-      citoyen: 'Moussa Diallo',
-      pays: 'Italie',
-      date: '03/07/2026',
-      prix: '6 000 FCFA',
-      priorite: 'normale'
-    },
-    {
-      id: 'TD-2026-E88P3',
-      icon: 'badge',
-      titre: 'Certificat de nationalité',
-      statut: 'En cours',
-      statutColor: 'orange',
-      citoyen: 'Fatou Ndiaye',
-      pays: 'Allemagne',
-      date: '29/06/2026',
-      prix: '3 500 FCFA',
-      priorite: 'normale'
-    }
-  ];
+  constructor(
+    private demandeService: DemandeService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  constructor(private router: Router) {}
+  ngOnInit() {
+    this.chargerDemandes();
+  }
 
-  get filteredDemandes() {
-    return this.demandes.filter(d => {
-      const matchFilter = this.activeFilter === 'Toutes' || d.statut === this.activeFilter;
-      const matchSearch = d.titre.toLowerCase().includes(this.search.toLowerCase()) ||
-                          d.id.toLowerCase().includes(this.search.toLowerCase()) ||
-                          d.citoyen.toLowerCase().includes(this.search.toLowerCase());
-      return matchFilter && matchSearch;
+  chargerDemandes() {
+    this.loading = true;
+    this.demandeService.getDemandesEnAttente().subscribe({
+      next: (res: any) => {
+        this.demandes = res;
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
   get stats() {
     return {
       total: this.demandes.length,
-      nouvelles: this.demandes.filter(d => d.statut === 'Nouvelle').length,
-      enCours: this.demandes.filter(d => d.statut === 'En cours').length,
-      aCompleter: this.demandes.filter(d => d.statut === 'À compléter').length
+      nouvelles: this.demandes.filter(d => d.statut === 'soumise').length,
+      enCours: this.demandes.filter(d => d.statut === 'en_instruction').length,
+      aCompleter: this.demandes.filter(d => d.statut === 'a_completer').length
     };
   }
 
-  setFilter(f: string) { this.activeFilter = f; }
+  get filteredDemandes() {
+    return this.demandes.filter(d => {
+      const matchFilter = this.activeFilter === 'Toutes' || d.statut === this.activeFilter;
+      const matchSearch = !this.search ||
+        d.type_demande?.libelle?.toLowerCase().includes(this.search.toLowerCase()) ||
+        d.reference?.toLowerCase().includes(this.search.toLowerCase()) ||
+        d.citoyen?.user?.name?.toLowerCase().includes(this.search.toLowerCase());
+      return matchFilter && matchSearch;
+    });
+  }
 
-  voirDetail(id: string) {
+  setFilter(f: string) {
+    this.activeFilter = f;
+    this.cdr.markForCheck();
+  }
+
+  voirDetail(id: number) {
     this.router.navigate(['/agent/demande', id]);
+  }
+
+  getStatutColor(statut: string): string {
+    const colors: any = {
+      'soumise': 'blue',
+      'en_instruction': 'orange',
+      'a_completer': 'red',
+      'validee': 'green',
+      'rejetee': 'red'
+    };
+    return colors[statut] || 'blue';
+  }
+
+  getIcon(libelle: string): string {
+    if (libelle?.includes('naissance')) return 'description';
+    if (libelle?.includes('mariage')) return 'favorite';
+    if (libelle?.includes('judiciaire')) return 'gavel';
+    if (libelle?.includes('résidence')) return 'home';
+    return 'description';
   }
 }

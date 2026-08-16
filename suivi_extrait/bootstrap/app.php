@@ -16,10 +16,20 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\HandleCors::class,
         ]);
 
-        $middleware->validateCsrfTokens(except: [
-            'api/*'
+        $middleware->validateCsrfTokens(except: ['api/*']);
+
+        $middleware->alias([
+            'role'       => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'message' => 'Non authentifié.'
+                ], 401);
+            }
+        });
     })->create();

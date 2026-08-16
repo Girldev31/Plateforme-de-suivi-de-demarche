@@ -11,10 +11,12 @@ import { Chatbot } from './pages/chatbot/chatbot';
 import { MesDemandes } from './pages/user/mes-demandes/mes-demandes';
 import { NouvelleDemande } from './pages/user/nouvelle-demande/nouvelle-demande';
 import { Profil } from './pages/user/profil/profil';
- 
 import { Demandes } from './pages/agent/demandes/demandes';
 import { DetailDemande } from './pages/agent/detail-demande/detail-demande';
 import { Historique } from './pages/agent/historique/historique';
+import { roleGuard } from './core/guards/role.guard';
+import { Utilisateurs } from './pages/admin/utilisateurs/utilisateurs';
+import { TypesDemandes } from './pages/admin/types-demandes/types-demandes';
 
 export const routes: Routes = [
   { path: '', component: Accueil },
@@ -26,6 +28,7 @@ export const routes: Routes = [
   {
     path: 'user',
     component: UserDashboard,
+    canActivate: [roleGuard(['utilisateur'])],
     children: [
       { path: '', redirectTo: 'mes-demandes', pathMatch: 'full' },
       { path: 'mes-demandes', component: MesDemandes },
@@ -34,16 +37,25 @@ export const routes: Routes = [
     ]
   },
   {
-  path: 'agent',
-  component: AgentDashboard,
-  children: [
-    { path: '', redirectTo: 'demandes', pathMatch: 'full' },
-    { path: 'demandes', component: Demandes },
-    { path: 'demande/:id', component: DetailDemande },
-    { path: 'historique', component: Historique }
-  ]
- },
-  { path: 'agent', component: AgentDashboard },
-  { path: 'admin', component: AdminDashboard },
+    path: 'agent',
+    component: AgentDashboard,
+    canActivate: [roleGuard(['agent'])],
+    children: [
+      { path: '', redirectTo: 'demandes', pathMatch: 'full' },
+      { path: 'demandes', component: Demandes },
+      { path: 'demande/:id', component: DetailDemande },
+      { path: 'historique', component: Historique }
+    ]
+  },
+  {
+    path: 'admin',
+    component: AdminDashboard,
+    canActivate: [roleGuard(['admin'])],
+    children: [
+      { path: '', redirectTo: 'utilisateurs', pathMatch: 'full' },
+      { path: 'utilisateurs', component: Utilisateurs },
+      { path: 'types-demandes', component: TypesDemandes }
+    ]
+  },
   { path: '**', redirectTo: '' }
 ];

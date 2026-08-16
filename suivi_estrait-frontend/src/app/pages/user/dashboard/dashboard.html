@@ -36,19 +36,39 @@
   <!-- CONTENU -->
   <div class="main-content">
 
-    <!-- Topbar -->
     <header class="topbar">
-      <div class="topbar-left">
-        <h2 class="topbar-title">Téranga <span>DIASPORA</span></h2>
+  <div class="topbar-left">
+    <h2 class="topbar-title">
+      Téranga
+      <span>DIASPORA</span>
+    </h2>
+  </div>
+  <div class="topbar-right">
+    <div class="notif-wrapper">
+      <button class="notif-btn" (click)="toggleNotifs()">
+        <span class="material-icons">notifications</span>
+        <span class="notif-badge" *ngIf="notifCount > 0">{{ notifCount }}</span>
+      </button>
+      <div class="notif-dropdown" *ngIf="showNotifs">
+        <div class="notif-header">
+          <h4>Notifications</h4>
+          <span (click)="marquerToutLu()" style="cursor:pointer;color:#00d084;font-size:12px;">Tout marquer lu</span>
+        </div>
+        <div class="notif-item" *ngFor="let msg of messages">
+          <span class="material-icons">mail</span>
+          <div>
+            <p>{{ msg.contenu }}</p>
+            <span>{{ msg.date_envoi | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+        <div *ngIf="messages.length === 0" class="notif-empty">
+          Aucune notification
+        </div>
       </div>
-      <div class="topbar-right">
-        <button class="notif-btn">
-          <span class="material-icons">notifications</span>
-          <span class="notif-badge">2</span>
-        </button>
-        <div class="user-avatar">T</div>
-      </div>
-    </header>
+    </div>
+    <div class="user-avatar">T</div>
+  </div>
+</header>
 
     <!-- Page content -->
     <div class="page-content">

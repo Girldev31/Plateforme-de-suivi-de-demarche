@@ -1,9 +1,8 @@
 <div class="agent-layout">
 
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-brand">
-       <img src="assets/images/logo.png" alt="SénégalAdmin" class="brand-logo" routerLink="/accueil">
+      <img src="logo.png" alt="SénégalAdmin" class="brand-logo">
     </div>
 
     <nav class="sidebar-nav">
@@ -29,8 +28,8 @@
     </div>
   </aside>
 
-  <!-- CONTENU -->
   <div class="main-content">
+
     <header class="topbar">
       <div class="topbar-left">
         <h2 class="topbar-title">
@@ -39,10 +38,27 @@
         </h2>
       </div>
       <div class="topbar-right">
-        <button class="notif-btn">
-          <span class="material-icons">notifications</span>
-          <span class="notif-badge">3</span>
-        </button>
+        <div class="notif-wrapper">
+          <button class="notif-btn" (click)="toggleNotifs()">
+            <span class="material-icons">notifications</span>
+            <span class="notif-badge" *ngIf="notifCount > 0">{{ notifCount }}</span>
+          </button>
+          <div class="notif-dropdown" *ngIf="showNotifs">
+            <div class="notif-header">
+              <h4>Nouvelles demandes</h4>
+            </div>
+            <div class="notif-item" *ngFor="let d of messages">
+              <span class="material-icons">assignment</span>
+              <div>
+                <p>{{ d.type_demande?.libelle }}</p>
+                <span>{{ d.citoyen?.user?.name }} — {{ d.date_soumission | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+            <div *ngIf="messages.length === 0" class="notif-empty">
+              Aucune nouvelle demande
+            </div>
+          </div>
+        </div>
         <div class="user-avatar">A</div>
       </div>
     </header>
@@ -50,6 +66,7 @@
     <div class="page-content">
       <router-outlet></router-outlet>
     </div>
+
   </div>
 
 </div>

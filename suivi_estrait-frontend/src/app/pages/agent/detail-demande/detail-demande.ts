@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { DemandeService } from '../../../core/demande';
 
 @Component({
   selector: 'app-detail-demande',
@@ -11,96 +12,92 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
   styleUrl: './detail-demande.scss'
 })
 export class DetailDemande implements OnInit {
-  demandeId = '';
+  demandeId = 0;
   observation = '';
   messageNotif = '';
-  statutSelectionne = 'En cours';
-  statuts = ['Nouvelle', 'En cours', 'À compléter', 'Validée', 'Rejetée'];
+  statutSelectionne = '';
+  statuts = ['soumise', 'en_instruction', 'a_completer', 'validee', 'rejetee', 'expediee'];
+  demande: any = null;
+  loading = true;
+  error = '';
 
-  demande = {
-    id: 'TD-2026-A41C8',
-    titre: 'Extrait de naissance',
-    icon: 'description',
-    statut: 'Nouvelle',
-    statutColor: 'blue',
-    citoyen: 'Awa Diop',
-    email: 'awa.diop@email.com',
-    telephone: '+33 6 12 34 56 78',
-    pays: 'France',
-    date: '02/07/2026',
-    prix: '5 000 FCFA',
-    paye: true,
-    pieces: [
-      { nom: 'Pièce d\'identité', fichier: 'CNI_Awa_Diop.pdf', valide: true },
-      { nom: 'Justificatif d\'adresse', fichier: 'Facture_EDF.pdf', valide: false }
-    ],
-    informations: {
-      nom: 'Awa Diop',
-      dateNaissance: '15/03/1990',
-      lieuNaissance: 'Dakar',
-      nomPere: 'Moussa Diop',
-      nomMere: 'Fatou Sall'
-    },
-    historique: [
-      { date: '02/07/2026 09:15', action: 'Demande soumise par le citoyen', auteur: 'Système' },
-      { date: '02/07/2026 10:30', action: 'Paiement confirmé', auteur: 'Système' }
-    ]
-  };
-
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private demandeService: DemandeService
+  ) {}
 
   ngOnInit() {
-    this.demandeId = this.route.snapshot.params['id'];
-    this.statutSelectionne = this.demande.statut;
+    this.demandeId = +this.route.snapshot.params['id'];
+    this.chargerDemande();
+  }
+
+  chargerDemande() {
+    this.demandeService.getDemandeById(this.demandeId).subscribe({
+      next: (res: any) => {
+        this.demande = res;
+        this.statutSelectionne = res.statut;
+        this.loading = false;
+      },
+      error: () => { this.loading = false; }
+    });
   }
 
   validerDemande() {
-    this.demande.statut = 'Validée';
-    this.demande.statutColor = 'green';
-    this.demande.historique.push({
-      date: new Date().toLocaleString('fr-FR'),
-      action: 'Demande validée par l\'agent',
-      auteur: 'Agent'
+    this.demandeService.validerDemande(this.demandeId, {
+      observation: this.observation
+    }).subscribe({
+      next: () => { this.chargerDemande(); },
+      error: (err) => { this.error = err.error?.message; }
     });
   }
 
   rejeterDemande() {
-    this.demande.statut = 'Rejetée';
-    this.demande.statutColor = 'red';
-    this.demande.historique.push({
-      date: new Date().toLocaleString('fr-FR'),
-      action: 'Demande rejetée par l\'agent',
-      auteur: 'Agent'
+    if (!this.observation) {
+      this.error = 'Veuillez ajouter une observation pour le rejet.';
+      return;
+    }
+    this.demandeService.rejeterDemande(this.demandeId, {
+      observation: this.observation
+    }).subscribe({
+      next: () => { this.chargerDemande(); },
+      error: (err) => { this.error = err.error?.message; }
     });
   }
 
   modifierStatut() {
-    this.demande.statut = this.statutSelectionne;
-    this.demande.historique.push({
-      date: new Date().toLocaleString('fr-FR'),
-      action: `Statut modifié : ${this.statutSelectionne}`,
-      auteur: 'Agent'
+    this.demandeService.updateStatut(this.demandeId, {
+      statut: this.statutSelectionne,
+      observation: this.observation
+    }).subscribe({
+      next: () => { this.chargerDemande(); },
+      error: (err) => { this.error = err.error?.message; }
     });
   }
 
-  ajouterObservation() {
-    if (!this.observation.trim()) return;
-    this.demande.historique.push({
-      date: new Date().toLocaleString('fr-FR'),
-      action: `Observation : ${this.observation}`,
-      auteur: 'Agent'
+  demanderPieces() {
+    if (!this.messageNotif) return;
+    this.demandeService.demanderPieces(this.demandeId, {
+      contenu: this.messageNotif
+    }).subscribe({
+      next: () => {
+        this.messageNotif = '';
+        this.chargerDemande();
+      },
+      error: (err) => { this.error = err.error?.message; }
     });
-    this.observation = '';
   }
 
-  envoyerNotification() {
-    if (!this.messageNotif.trim()) return;
-    this.demande.historique.push({
-      date: new Date().toLocaleString('fr-FR'),
-      action: `Notification envoyée : ${this.messageNotif}`,
-      auteur: 'Agent'
-    });
-    this.messageNotif = '';
+  getStatutColor(statut: string): string {
+    const colors: any = {
+      'soumise': 'blue',
+      'en_instruction': 'orange',
+      'a_completer': 'red',
+      'validee': 'green',
+      'rejetee': 'red',
+      'expediee': 'green'
+    };
+    return colors[statut] || 'blue';
   }
 
   retour() {

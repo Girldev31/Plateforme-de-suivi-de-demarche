@@ -1,1 +1,131 @@
-<p>chatbot works!</p>
+<div class="chatbot-page">
+
+  <!-- SIDEBAR -->
+  <div class="chat-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-avatar">
+        <img src="avatar-abdoul.png" alt="Abdoul"
+          onerror="this.src='https://ui-avatars.com/api/?name=Abdoul&background=00d084&color=000&size=48'">
+      </div>
+      <div class="sidebar-info">
+        <h3>Abdoul</h3>
+        <p>En ligne</p>
+      </div>
+    </div>
+
+    <div class="sidebar-menu">
+      <button class="menu-item active">
+        <span class="material-icons">add_circle_outline</span>
+        Nouvelle conversation
+      </button>
+      <button class="menu-item">
+        <span class="material-icons">folder_open</span>
+        Mes démarches
+      </button>
+      <button class="menu-item">
+        <span class="material-icons">description</span>
+        Documents disponibles
+      </button>
+      <button class="menu-item">
+        <span class="material-icons">help_outline</span>
+        FAQ
+      </button>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="back-btn" (click)="close()">
+        <span class="material-icons">arrow_back</span>
+        Retour à l'accueil
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN CHAT -->
+  <div class="chat-main">
+
+    <!-- Welcome screen -->
+    <div class="welcome-screen" *ngIf="messages.length === 0">
+      <div class="welcome-avatar">
+        <img src="avatar-abdoul.png" alt="Abdoul"
+          onerror="this.src='https://ui-avatars.com/api/?name=Abdoul&background=00d084&color=000&size=80'">
+      </div>
+      <h1>Bonjour, je suis <span>Abdoul</span></h1>
+      <p>Votre assistant pour vos démarches administratives sénégalaises. Comment puis-je vous aider aujourd'hui ?</p>
+
+      <div class="quick-actions">
+        <button class="quick-card" (click)="sendSuggestion('Comment ça marche ?')">
+          <span class="material-icons">info</span>
+          <div>
+            <h4>Comment ça marche ?</h4>
+            <p>Découvrez le processus de demande</p>
+          </div>
+        </button>
+        <button class="quick-card" (click)="sendSuggestion('Quels documents puis-je obtenir ?')">
+          <span class="material-icons">description</span>
+          <div>
+            <h4>Documents disponibles</h4>
+            <p>Consultez nos services administratifs</p>
+          </div>
+        </button>
+        <button class="quick-card" (click)="sendSuggestion('Combien ça coûte ?')">
+          <span class="material-icons">payments</span>
+          <div>
+            <h4>Tarifs et délais</h4>
+            <p>Prix et délais de traitement</p>
+          </div>
+        </button>
+        <button class="quick-card" (click)="sendSuggestion('Comment suivre ma demande ?')">
+          <span class="material-icons">track_changes</span>
+          <div>
+            <h4>Suivre ma demande</h4>
+            <p>Vérifier l'avancement de mon dossier</p>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages" #messagesContainer *ngIf="messages.length > 0">
+      <div class="date-divider">Aujourd'hui</div>
+
+      <div *ngFor="let msg of messages" class="message-row" [class.user-row]="msg.isUser">
+        <div class="msg-avatar" *ngIf="!msg.isUser">
+          <img src="avatar-abdoul.png" alt="Abdoul"
+            onerror="this.src='https://ui-avatars.com/api/?name=Abdoul&background=00d084&color=000&size=36'">
+        </div>
+        <div class="message-bubble" [class.user-bubble]="msg.isUser">
+          <p>{{ msg.text }}</p>
+          <span class="msg-time">{{ msg.time }}</span>
+        </div>
+      </div>
+
+      <div class="message-row" *ngIf="isTyping">
+        <div class="msg-avatar">
+          <img src="avatar-abdoul.png" alt="Abdoul"
+            onerror="this.src='https://ui-avatars.com/api/?name=Abdoul&background=00d084&color=000&size=36'">
+        </div>
+        <div class="typing-indicator">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input-area">
+      <div class="input-wrapper">
+        <input
+          type="text"
+          [(ngModel)]="userInput"
+          (keydown)="onKeyDown($event)"
+          placeholder="Posez votre question à Abdoul...">
+        <div class="input-actions">
+          <button class="send-btn" (click)="sendMessage()" [disabled]="!userInput.trim() || isTyping">
+            <span class="material-icons">send</span>
+          </button>
+        </div>
+      </div>
+      <p class="input-footer">Propulsé par <span>SénégalAdmin</span></p>
+    </div>
+
+  </div>
+</div>

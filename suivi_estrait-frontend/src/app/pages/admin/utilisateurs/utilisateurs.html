@@ -1,0 +1,128 @@
+<div class="utilisateurs-page">
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon blue">
+        <span class="material-icons">assignment</span>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats.total_demandes }}</span>
+        <span class="stat-label">Total demandes</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">
+        <span class="material-icons">check_circle</span>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats.demandes_validees }}</span>
+        <span class="stat-label">Validées</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon orange">
+        <span class="material-icons">people</span>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats.total_citoyens }}</span>
+        <span class="stat-label">Citoyens</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon blue">
+        <span class="material-icons">support_agent</span>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats.total_agents }}</span>
+        <span class="stat-label">Agents</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <div>
+      <h1>Gestion des utilisateurs</h1>
+      <p>Gérez les comptes citoyens et agents.</p>
+    </div>
+    <button class="btn-new" (click)="showForm = !showForm">
+      <span class="material-icons">add</span>
+      Créer un agent
+    </button>
+  </div>
+
+  <div class="form-card" *ngIf="showForm">
+    <h3>Créer un nouvel agent</h3>
+    <div *ngIf="error" style="color:#ef4444;margin-bottom:12px;">{{ error }}</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nom complet</label>
+        <input type="text" [(ngModel)]="nouvelAgent.name" placeholder="Nom de l'agent">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="nouvelAgent.email" placeholder="email@senegaladmin.sn">
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" [(ngModel)]="nouvelAgent.password" placeholder="••••••••">
+      </div>
+      <div class="form-group">
+        <label>Matricule</label>
+        <input type="text" [(ngModel)]="nouvelAgent.matricule" placeholder="AG-001">
+      </div>
+      <div class="form-group">
+        <label>Service</label>
+        <input type="text" [(ngModel)]="nouvelAgent.service" placeholder="Etat Civil">
+      </div>
+    </div>
+    <button class="btn-submit" (click)="creerAgent()">
+      <span class="material-icons">save</span>
+      Créer l'agent
+    </button>
+  </div>
+
+  <div *ngIf="success" style="color:#00d084;margin-bottom:16px;">{{ success }}</div>
+
+  <div *ngIf="loading" style="padding:40px;text-align:center;color:#9ca3af;">
+    Chargement...
+  </div>
+
+  <div class="users-table" *ngIf="!loading && utilisateurs.length > 0">
+    <div class="table-header">
+      <span>Utilisateur</span>
+      <span>Rôle</span>
+      <span>Statut</span>
+      <span>Actions</span>
+    </div>
+    <div class="table-row" *ngFor="let u of utilisateurs">
+      <div class="user-cell">
+        <div class="user-avatar-sm">{{ u.name?.charAt(0) }}</div>
+        <div>
+          <p class="user-name">{{ u.name }}</p>
+          <p class="user-email">{{ u.email }}</p>
+        </div>
+      </div>
+      <span class="role-badge" [class.agent]="getRole(u) === 'agent'" [class.user]="getRole(u) === 'utilisateur'">
+        {{ getRole(u) }}
+      </span>
+      <span class="statut-badge" [class.actif]="u.statut === 'actif'" [class.suspendu]="u.statut === 'suspendu'">
+        {{ u.statut }}
+      </span>
+      <div class="action-btns">
+        <button class="btn-bloquer" *ngIf="u.statut === 'actif'" (click)="bloquer(u.id)">
+          <span class="material-icons">block</span>
+          Bloquer
+        </button>
+        <button class="btn-debloquer" *ngIf="u.statut !== 'actif'" (click)="debloquer(u.id)">
+          <span class="material-icons">check_circle</span>
+          Débloquer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && utilisateurs.length === 0" style="padding:40px;text-align:center;color:#9ca3af;">
+    Aucun utilisateur trouvé.
+  </div>
+
+</div>

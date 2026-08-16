@@ -1,0 +1,74 @@
+<div class="types-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Types de demandes</h1>
+      <p>Gérez les documents administratifs disponibles.</p>
+    </div>
+    <button class="btn-new" (click)="showForm = !showForm">
+      <span class="material-icons">add</span>
+      Nouveau type
+    </button>
+  </div>
+
+  <div *ngIf="success" style="color:#00d084;margin-bottom:16px;">{{ success }}</div>
+  <div *ngIf="error" style="color:#ef4444;margin-bottom:16px;">{{ error }}</div>
+
+  <div class="form-card" *ngIf="showForm">
+    <h3>Créer un nouveau type de demande</h3>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Libellé</label>
+        <input type="text" [(ngModel)]="nouveauType.libelle" placeholder="Ex: Extrait de naissance">
+      </div>
+      <div class="form-group full">
+        <label>Description</label>
+        <input type="text" [(ngModel)]="nouveauType.description" placeholder="Description du document">
+      </div>
+      <div class="form-group">
+        <label>Frais (FCFA)</label>
+        <input type="number" [(ngModel)]="nouveauType.frais" placeholder="5000">
+      </div>
+      <div class="form-group">
+        <label>Délai de traitement (jours)</label>
+        <input type="number" [(ngModel)]="nouveauType.delai_traitement" placeholder="7">
+      </div>
+    </div>
+    <button class="btn-submit" (click)="creerType()">
+      <span class="material-icons">save</span>
+      Créer
+    </button>
+  </div>
+
+  <div *ngIf="loading" style="padding:40px;text-align:center;color:#9ca3af;">
+    Chargement...
+  </div>
+
+  <div class="types-grid" *ngIf="!loading && types.length > 0">
+    <div class="type-card" *ngFor="let type of types">
+      <div class="type-header">
+        <div class="type-icon">
+          <span class="material-icons">description</span>
+        </div>
+        <span class="type-actif" [class.actif]="type.actif" [class.inactif]="!type.actif">
+          {{ type.actif ? 'Actif' : 'Inactif' }}
+        </span>
+      </div>
+      <h3>{{ type.libelle }}</h3>
+      <p>{{ type.description }}</p>
+      <div class="type-footer">
+        <span class="type-frais">{{ type.frais }} FCFA</span>
+        <span class="type-delai">
+          <span class="material-icons">schedule</span>
+          {{ type.delai_traitement }} jours
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && types.length === 0"
+    style="padding:40px;text-align:center;color:#9ca3af;">
+    Aucun type de demande trouvé.
+  </div>
+
+</div>

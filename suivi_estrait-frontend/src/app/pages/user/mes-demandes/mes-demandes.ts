@@ -1,19 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-
-interface Demande {
-  icon: string;
-  titre: string;
-  statut: string;
-  statutColor: string;
-  ref: string;
-  nom: string;
-  date: string;
-  prix: string;
-  paye: boolean;
-}
+import { DemandeService } from '../../../core/demande';
 
 @Component({
   selector: 'app-mes-demandes',
@@ -22,58 +11,64 @@ interface Demande {
   templateUrl: './mes-demandes.html',
   styleUrl: './mes-demandes.scss'
 })
-export class MesDemandes {
+export class MesDemandes implements OnInit {
   search = '';
   activeFilter = 'Toutes';
-  filters = ['Toutes', 'Soumise', 'En instruction', 'À compléter', 'Expédiée', 'Reçue'];
+  filters = ['Toutes', 'soumise', 'en_instruction', 'a_completer', 'expediee', 'recue'];
+  demandes: any[] = [];
+  loading = false;
 
-  demandes: Demande[] = [
-  {
-    icon: 'description',
-    titre: 'Extrait de naissance',
-    statut: 'Expédiée',
-    statutColor: 'green',
-    ref: 'TD-2026-A41C8',
-    nom: 'Awa Diop',
-    date: '02/06/2026',
-    prix: '5 000 FCFA',
-    paye: true
-  },
-  {
-    icon: 'gavel',
-    titre: 'Casier judiciaire (Bulletin n°3)',
-    statut: 'En instruction',
-    statutColor: 'blue',
-    ref: 'TD-2026-B72F1',
-    nom: 'Ibrahima Sarr',
-    date: '10/06/2026',
-    prix: '7 500 FCFA',
-    paye: true
-  },
-  {
-    icon: 'home',
-    titre: 'Certificat de résidence',
-    statut: 'À compléter',
-    statutColor: 'orange',
-    ref: 'TD-2026-C09K4',
-    nom: 'Mariama Faye',
-    date: '12/06/2026',
-    prix: '3 500 FCFA',
-    paye: false
+  constructor(
+    private demandeService: DemandeService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() {
+    this.loading = true;
+    this.demandeService.getMesDemandes().subscribe({
+      next: (res: any) => {
+        this.demandes = res;
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error(err);
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
+    });
   }
-];
-   
 
   get filteredDemandes() {
     return this.demandes.filter(d => {
       const matchFilter = this.activeFilter === 'Toutes' || d.statut === this.activeFilter;
-      const matchSearch = d.titre.toLowerCase().includes(this.search.toLowerCase()) ||
-                          d.ref.toLowerCase().includes(this.search.toLowerCase());
+      const matchSearch = !this.search ||
+        d.type_demande?.libelle?.toLowerCase().includes(this.search.toLowerCase()) ||
+        d.reference?.toLowerCase().includes(this.search.toLowerCase());
       return matchFilter && matchSearch;
     });
   }
 
-  setFilter(f: string) {
-    this.activeFilter = f;
+  setFilter(f: string) { this.activeFilter = f; }
+
+  getStatutColor(statut: string): string {
+    const colors: any = {
+      'soumise': 'blue',
+      'en_instruction': 'orange',
+      'a_completer': 'red',
+      'validee': 'green',
+      'expediee': 'green',
+      'recue': 'green',
+      'rejetee': 'red'
+    };
+    return colors[statut] || 'blue';
+  }
+
+  getIcon(libelle: string): string {
+    if (libelle?.includes('naissance')) return 'description';
+    if (libelle?.includes('mariage')) return 'favorite';
+    if (libelle?.includes('judiciaire')) return 'gavel';
+    if (libelle?.includes('résidence')) return 'home';
+    return 'description';
   }
 }

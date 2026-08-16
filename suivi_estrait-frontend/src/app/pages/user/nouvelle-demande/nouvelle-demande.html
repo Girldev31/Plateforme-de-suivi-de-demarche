@@ -13,21 +13,33 @@
     </div>
   </div>
 
+  <div class="error-message" *ngIf="error"
+    style="margin-bottom: 16px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #ef4444; padding: 12px 16px; border-radius: 8px; font-size: 13px;">
+    <span class="material-icons" style="font-size:16px; vertical-align:middle;">error</span>
+    {{ error }}
+  </div>
+
+
   <!-- ÉTAPE 1 — Choisir le document -->
   <div class="step-content" *ngIf="currentStep === 1">
     <div class="step-card">
       <h3>Quel document souhaitez-vous ?</h3>
-      <div class="docs-grid">
+
+      <div class="loading-state" *ngIf="loading">
+        <p>Chargement...</p>
+      </div>
+
+      <div class="docs-grid" *ngIf="!loading">
         <div class="doc-item" *ngFor="let doc of documents" [class.selected]="selectedDocument === doc"
           (click)="selectDocument(doc)">
           <div class="doc-item-icon">
-            <span class="material-icons">{{ doc.icone }}</span>
+            <span class="material-icons">description</span>
           </div>
-          <h4>{{ doc.titre }}</h4>
+          <h4>{{ doc.libelle }}</h4>
           <p>{{ doc.description }}</p>
           <div class="doc-item-footer">
-            <span class="doc-prix">{{ doc.prix }}</span>
-            <span class="doc-delai">{{ doc.delai }}</span>
+            <span class="doc-prix">{{ doc.frais }} FCFA</span>
+            <span class="doc-delai">{{ doc.delai_traitement }} jours</span>
           </div>
         </div>
       </div>
@@ -43,10 +55,9 @@
   <div class="step-content" *ngIf="currentStep === 2">
     <div class="step-card">
       <div class="selected-doc-header" *ngIf="selectedDocument">
-        <span class="selected-icon">{{ selectedDocument.icon }}</span>
         <div>
-          <h4>{{ selectedDocument.titre }}</h4>
-          <p>{{ selectedDocument.prix }} • {{ selectedDocument.delai }}</p>
+          <h4>{{ selectedDocument.libelle }}</h4>
+          <p>{{ selectedDocument.frais }} FCFA • {{ selectedDocument.delai_traitement }} jours</p>
         </div>
       </div>
       <hr class="divider">
@@ -85,19 +96,48 @@
     <div class="step-card">
       <h3>Pièces justificatives</h3>
       <p class="step-desc">Joignez les documents suivants :</p>
+
       <div class="pieces-list">
-        <div class="piece-item">✅ Pièce d'identité</div>
-        <div class="piece-item">✅ Justificatif d'adresse (facture, bail)</div>
+        <div class="piece-item">
+          <span class="material-icons">check_circle</span>
+          Pièce d'identité
+        </div>
+        <div class="piece-item">
+          <span class="material-icons">check_circle</span>
+          Justificatif d'adresse (facture, bail)
+        </div>
       </div>
-      <div class="upload-zone">
-        <div class="upload-icon">⬆️</div>
+
+      <div class="upload-zone" (click)="fileInput.click()" (dragover)="$event.preventDefault()"
+        (drop)="onFichierChange($event)">
+        <span class="material-icons upload-icon">cloud_upload</span>
         <p>Cliquez ou glissez vos fichiers ici</p>
         <span>PDF, JPG, PNG — 10 Mo max</span>
+        <input #fileInput type="file" multiple accept=".pdf,.jpg,.jpeg,.png" (change)="onFichierChange($event)"
+          style="display:none">
+      </div>
+
+      <div class="fichiers-selectionnes" *ngIf="fichiersSelectionnes.length > 0">
+        <p style="color:#00d084;font-size:13px;margin-top:12px;">
+          <span class="material-icons" style="font-size:16px;vertical-align:middle;">check_circle</span>
+          {{ fichiersSelectionnes.length }} fichier(s) sélectionné(s)
+        </p>
+        <div *ngFor="let f of fichiersSelectionnes" style="font-size:12px;color:#9ca3af;margin-top:4px;">
+          <span class="material-icons" style="font-size:14px;vertical-align:middle;">picture_as_pdf</span>
+          {{ f.name }}
+        </div>
+      </div>
+
+      <div *ngIf="uploadError" style="color:#ef4444;font-size:13px;margin-top:12px;">
+        {{ uploadError }}
       </div>
     </div>
+
     <div class="step-actions">
       <button class="btn-back" (click)="prevStep()">← Retour</button>
-      <button class="btn-next" (click)="nextStep()">Continuer →</button>
+      <button class="btn-next" (click)="nextStep()" [disabled]="loading">
+        {{ loading ? 'Upload en cours...' : 'Continuer →' }}
+      </button>
     </div>
   </div>
 
@@ -119,8 +159,9 @@
           <span class="recap-value">1 fichier(s)</span>
         </div>
         <div class="recap-row total">
-          <span class="recap-label">Total à payer</span>
-          <span class="recap-total">{{ selectedDocument?.prix }}</span>
+          <span class="recap-value">{{ selectedDocument?.libelle }}</span>
+          <span class="recap-total">{{ selectedDocument?.frais }} FCFA</span>
+
         </div>
       </div>
 
@@ -155,21 +196,24 @@
     </div>
     <div class="step-actions">
       <button class="btn-back" (click)="prevStep()">← Retour</button>
-      <button class="btn-next" (click)="nextStep()">
-        Payer {{ selectedDocument?.prix }}
+      <button class="btn-next" (click)="payerDemande()" [disabled]="loading">
+      {{ loading ? 'Redirection...' : 'Payer ' + selectedDocument?.frais + ' FCFA' }}
       </button>
     </div>
   </div>
 
+
   <!-- ÉTAPE 5 — Confirmation -->
   <div class="step-content" *ngIf="currentStep === 5">
     <div class="step-card confirmation">
-      <div class="confirm-icon">✅</div>
+      <div class="confirm-icon">
+        <span class="material-icons">check_circle</span>
+      </div>
       <h2>Demande soumise avec succès !</h2>
-      <p>Votre demande a été enregistrée. Vous recevrez une notification à chaque étape du traitement.</p>
-      <div class="confirm-ref">
+      <p>Votre demande a été enregistrée. Vous recevrez un email de confirmation.</p>
+      <div class="confirm-ref" *ngIf="demandeCreee">
         <span>Référence :</span>
-        <strong>TD-2026-{{ (Math.random() * 99999 | number:'5.0-0') }}</strong>
+        <strong>{{ demandeCreee.reference }}</strong>
       </div>
       <a routerLink="/user/mes-demandes" class="btn-next">
         Voir mes demandes →
