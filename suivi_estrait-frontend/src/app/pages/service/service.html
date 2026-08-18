@@ -1,23 +1,20 @@
 <div class="service-page">
   <div class="service-container">
 
-    <!-- Header -->
     <div class="service-header">
       <span class="catalogue-badge">CATALOGUE OFFICIEL</span>
       <h1>Nos services administratifs</h1>
       <p>Suivez vos démarches officielles en ligne en toute sécurité depuis l'étranger.</p>
     </div>
 
-    <!-- Recherche -->
     <div class="service-search">
-      <span class="search-icon">🔍</span>
+      <span class="material-icons">search</span>
       <input
         type="text"
         [(ngModel)]="searchQuery"
         placeholder="Rechercher un document (ex: Casier...)">
     </div>
 
-    <!-- Catégories -->
     <div class="service-categories">
       <button
         *ngFor="let cat of categories"
@@ -27,24 +24,77 @@
       </button>
     </div>
 
-    <!-- Grille services -->
-    <div class="service-grid">
+    <div *ngIf="loading" style="text-align:center;padding:40px;color:#9ca3af;">
+      Chargement...
+    </div>
+
+    <div class="service-grid" *ngIf="!loading">
       <div class="service-card" *ngFor="let service of filteredServices">
-        <div class="card-icon">{{ service.icon }}</div>
-        <h3>{{ service.title }}</h3>
+        <div class="card-icon">
+          <span class="material-icons">description</span>
+        </div>
+        <h3>{{ service.libelle }}</h3>
         <p class="card-description">{{ service.description }}</p>
         <div class="card-footer">
-          <div class="card-left">
-            <span class="card-price">{{ service.price }}</span>
-            <span class="card-delai">⏱ {{ service.delai }}</span>
-          </div>
+          <span class="card-price">{{ service.frais }} FCFA</span>
+          <span class="card-delai">
+            <span class="material-icons" style="font-size:14px">schedule</span>
+            {{ service.delai_traitement }} jours
+          </span>
         </div>
         <div class="card-actions">
-          <button class="btn-commencer">Commencer</button>
-          <button class="btn-voir">Voir Plus</button>
+          <a routerLink="/register" class="btn-commencer">Commencer</a>
+          <button class="btn-voir" (click)="voirDetail(service)">Voir Plus</button>
         </div>
       </div>
     </div>
 
+    <div *ngIf="!loading && filteredServices.length === 0"
+      style="text-align:center;padding:40px;color:#9ca3af;">
+      Aucun service trouvé.
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal Voir Plus -->
+<div class="modal-overlay" *ngIf="selectedService" (click)="fermerDetail()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="fermerDetail()">
+      <span class="material-icons">close</span>
+    </button>
+    <div class="modal-icon">
+      <span class="material-icons">description</span>
+    </div>
+    <h2>{{ selectedService.libelle }}</h2>
+    <p class="modal-description">{{ selectedService.description }}</p>
+    <div class="modal-info">
+      <div class="info-item">
+        <span class="material-icons">payments</span>
+        <div>
+          <span class="info-label">Frais</span>
+          <span class="info-value">{{ selectedService.frais }} FCFA</span>
+        </div>
+      </div>
+      <div class="info-item">
+        <span class="material-icons">schedule</span>
+        <div>
+          <span class="info-label">Délai</span>
+          <span class="info-value">{{ selectedService.delai_traitement }} jours ouvrés</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-pieces">
+      <h4>Pièces requises</h4>
+      <ul>
+        <li><span class="material-icons">check_circle</span> Pièce d'identité valide (CNI ou passeport)</li>
+        <li><span class="material-icons">check_circle</span> Justificatif d'adresse récent</li>
+        <li><span class="material-icons">check_circle</span> Photos si nécessaire</li>
+      </ul>
+    </div>
+    <a routerLink="/register" class="btn-commencer-modal">
+      Commencer ma demande
+      <span class="material-icons">arrow_forward</span>
+    </a>
   </div>
 </div>

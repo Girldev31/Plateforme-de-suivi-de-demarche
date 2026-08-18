@@ -83,5 +83,6 @@ return [
         'encrypt_cookies' => EncryptCookies::class,
         'validate_csrf_token' => ValidateCsrfToken::class,
     ],
+    'expiration' => 1440, // 24 heures en minutes
 
 ];

@@ -15,23 +15,35 @@ class PieceJustificativeController extends Controller
         ]);
 
         $fichier = $request->file('fichier');
-        $nomFichier = time() . '_' . $fichier->getClientOriginalName();
+
+        // Vérification du type MIME réel
+        $mimeType = $fichier->getMimeType();
+        $allowedMimes = ['application/pdf', 'image/jpeg', 'image/png'];
+        
+        if (!in_array($mimeType, $allowedMimes)) {
+            return response()->json([
+                'message' => 'Type de fichier non autorisé.'
+            ], 422);
+        }
+
+        // Renommer le fichier pour éviter les exécutions malveillantes
+        $extension = $fichier->getClientOriginalExtension();
+        $nomFichier = uniqid() . '_' . time() . '.' . $extension;
         $chemin = $fichier->storeAs('pieces', $nomFichier, 'private');
 
         $piece = PieceJustificative::create([
-            'demande_id'    => $request->demande_id,
-            'nom_fichier'   => $fichier->getClientOriginalName(),
+            'demande_id'     => $request->demande_id,
+            'nom_fichier'    => $fichier->getClientOriginalName(),
             'chemin_fichier' => $chemin,
-            'type'          => $fichier->getClientMimeType(),
-            'est_valide'    => false
+            'type'           => $mimeType,
+            'est_valide'     => false
         ]);
 
         return response()->json([
-            'message' => 'Pièce uploadée.',
+            'message' => 'Pièce uploadée avec succès.',
             'piece'   => $piece
         ], 201);
     }
-
     public function valider(Request $request, $id)
     {
         $piece = PieceJustificative::findOrFail($id);
