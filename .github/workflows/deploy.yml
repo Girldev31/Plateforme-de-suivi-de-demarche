@@ -52,7 +52,8 @@ jobs:
           DB_DATABASE: suivi_extrait_test
           DB_USERNAME: postgres
           DB_PASSWORD: password
-        run: php artisan migrate --force
+        run: |
+          php artisan migrate:fresh --force
 
 
   # Job SonarQube
