@@ -10,50 +10,54 @@ jobs:
 
   # Job 1 — Tests Backend Laravel
   test-backend:
-    name: Tests Laravel
-    runs-on: ubuntu-latest
+      name: Tests Laravel
+      runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DB: suivi_extrait_test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-        ports:
-          - 5432:5432
+      services:
+        postgres:
+          image: postgres:15
+          env:
+            POSTGRES_DB: suivi_extrait_test
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: password
+          ports:
+            - 5432:5432
+          options: >-
+            --health-cmd pg_isready
+            --health-interval 10s
+            --health-timeout 5s
+            --health-retries 5
 
-    steps:
-      - name: Récupérer le code
-        uses: actions/checkout@v3
+      steps:
+        - name: Récupérer le code
+          uses: actions/checkout@v3
 
-      - name: Installer PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: pdo, pdo_pgsql, mbstring
+        - name: Installer PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: '8.2'
+            extensions: pdo, pdo_pgsql, mbstring, xml, curl, zip
 
-      - name: Installer les dépendances Laravel
-        working-directory: ./suivi_extrait
-        run: composer install --no-interaction
+        - name: Installer les dépendances Laravel
+          working-directory: ./suivi_extrait
+          run: composer install --no-interaction --prefer-dist
 
-      - name: Copier le fichier .env
-        working-directory: ./suivi_extrait
-        run: |
-          cp .env.example .env
-          php artisan key:generate
+        - name: Créer le fichier .env
+          working-directory: ./suivi_extrait
+          run: |
+            cp .env.example .env
+            sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=pgsql/' .env
+            echo "DB_HOST=127.0.0.1" >> .env
+            echo "DB_PORT=5432" >> .env
+            echo "DB_DATABASE=suivi_extrait_test" >> .env
+            echo "DB_USERNAME=postgres" >> .env
+            echo "DB_PASSWORD=password" >> .env
+            php artisan key:generate
 
-      - name: Lancer les migrations
-        working-directory: ./suivi_extrait
-        env:
-          DB_CONNECTION: pgsql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 5432
-          DB_DATABASE: suivi_extrait_test
-          DB_USERNAME: postgres
-          DB_PASSWORD: password
-        run: |
-          php artisan migrate:fresh --force
+        - name: Lancer les migrations
+          working-directory: ./suivi_extrait
+          run: |
+            php artisan migrate:fresh --force
 
 
   # Job SonarQube
