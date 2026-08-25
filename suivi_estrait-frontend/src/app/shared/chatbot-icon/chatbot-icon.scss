@@ -1,0 +1,181 @@
+.chatbot-wrapper {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.chatbot-avatar {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid #00d084;
+  box-shadow: 0 4px 20px rgba(0, 208, 132, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 28px rgba(0, 208, 132, 0.6);
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  .avatar-status {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 14px;
+    height: 14px;
+    background: #00d084;
+    border-radius: 50%;
+    border: 2px solid #0a0e1a;
+    animation: pulse 2s infinite;
+  }
+}
+
+.chatbot-bubble {
+  position: relative;
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 16px;
+  padding: 20px;
+  width: 300px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  animation: slideUp 0.3s ease;
+
+  .bubble-close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: #6b7280;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #ffffff;
+    }
+  }
+
+  .bubble-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #00d084;
+    margin-bottom: 12px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+  }
+
+  .bubble-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #00d084;
+    margin-bottom: 6px;
+  }
+
+  .bubble-message {
+    font-size: 13px;
+    color: #d1d5db;
+    line-height: 1.6;
+    margin-bottom: 16px;
+
+    strong {
+      color: #ffffff;
+    }
+  }
+
+  .bubble-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .btn-yes {
+      background: #00d084;
+      color: #000000;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-align: center;
+
+      &:hover {
+        background: #00a86b;
+      }
+    }
+
+    .btn-no {
+      background: transparent;
+      color: #9ca3af;
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid #1f2937;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+
+      &:hover {
+        border-color: #374151;
+        color: #ffffff;
+      }
+    }
+  }
+
+  // Flèche pointant vers l'avatar
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 28px;
+    width: 16px;
+    height: 16px;
+    background: #111827;
+    border-right: 1px solid #1f2937;
+    border-bottom: 1px solid #1f2937;
+    transform: rotate(45deg);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 208, 132, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(0, 208, 132, 0);
+  }
+}

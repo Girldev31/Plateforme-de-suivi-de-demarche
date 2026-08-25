@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+
+  # Base de données PostgreSQL
+  postgres:
+    image: postgres:15
+    container_name: senegaladmin_db
+    environment:
+      POSTGRES_DB: suivi_extrait
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: P@sser123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - senegaladmin_network
+
+  # Backend Laravel
+  backend:
+    build:
+      context: ./suivi_extrait
+      dockerfile: Dockerfile
+    container_name: senegaladmin_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=suivi_extrait
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=P@sser123
+    depends_on:
+      - postgres
+    volumes:
+      - ./suivi_extrait:/var/www/html
+    networks:
+      - senegaladmin_network
+
+  # Frontend Angular
+  frontend:
+    build:
+      context: ./suivi_estrait-frontend
+      dockerfile: Dockerfile
+    container_name: senegaladmin_frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - senegaladmin_network
+
+volumes:
+  postgres_data:
+
+networks:
+  senegaladmin_network:
+    driver: bridge

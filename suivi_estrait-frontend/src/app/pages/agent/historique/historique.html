@@ -1,0 +1,30 @@
+<div class="historique-page">
+  <div class="page-header">
+    <h1>Historique des traitements</h1>
+    <p>Toutes les demandes que vous avez traitées.</p>
+  </div>
+
+  <div class="historique-table">
+    <div class="table-header">
+      <span>Document</span>
+      <span>Citoyen</span>
+      <span>Date</span>
+      <span>Statut</span>
+      <span>Agent</span>
+    </div>
+
+    <div class="table-row" *ngFor="let h of historique">
+      <div class="doc-cell">
+        <span class="material-icons doc-icon">description</span>
+        <div>
+          <p class="doc-titre">{{ h.titre }}</p>
+          <p class="doc-ref">{{ h.id }}</p>
+        </div>
+      </div>
+      <span class="citoyen">{{ h.citoyen }}</span>
+      <span class="date">{{ h.date }}</span>
+      <span class="statut-badge" [class]="h.statutColor">{{ h.statut }}</span>
+      <span class="agent">{{ h.agent }}</span>
+    </div>
+  </div>
+</div>

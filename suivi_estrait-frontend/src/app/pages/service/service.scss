@@ -1,0 +1,342 @@
+.service-page {
+  padding-top: 80px;
+  min-height: 100vh;
+  background: #0a0e1a;
+}
+
+.service-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 24px;
+}
+
+.service-header {
+  text-align: center;
+  margin-bottom: 40px;
+
+  .catalogue-badge {
+    font-size: 12px;
+    font-weight: 600;
+    color: #00d084;
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 12px;
+  }
+
+  p {
+    color: #9ca3af;
+    font-size: 15px;
+  }
+}
+
+.service-search {
+  position: relative;
+  max-width: 500px;
+  margin: 0 auto 32px;
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+  }
+
+  input {
+    width: 100%;
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 8px;
+    padding: 12px 16px 12px 42px;
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+
+    &::placeholder {
+      color: #6b7280;
+    }
+
+    &:focus {
+      border-color: #00d084;
+    }
+  }
+}
+
+.service-categories {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+
+  button {
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    background: #111827;
+    color: #9ca3af;
+    border: 1px solid #1f2937;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: #00d084;
+      color: #ffffff;
+    }
+
+    &.active {
+      background: #00d084;
+      color: #000000;
+      border-color: #00d084;
+      font-weight: 600;
+    }
+  }
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.service-card {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 14px;
+  padding: 28px 24px;
+  transition: border-color 0.2s, transform 0.2s;
+
+  &:hover {
+    border-color: #00d084;
+    transform: translateY(-4px);
+  }
+
+  .card-icon {
+    font-size: 28px;
+    margin-bottom: 14px;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 8px;
+  }
+
+  .card-description {
+    color: #9ca3af;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    .card-price {
+      color: #00d084;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .card-delai {
+      color: #6b7280;
+      font-size: 12px;
+    }
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+
+    .btn-commencer {
+      background: #00d084;
+      color: #000000;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background: #00a86b;
+      }
+    }
+
+    .btn-voir {
+      background: transparent;
+      color: #9ca3af;
+      font-size: 13px;
+      padding: 10px 16px;
+      border-radius: 6px;
+      border: 1px solid #1f2937;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        border-color: #00d084;
+        color: #ffffff;
+      }
+    }
+  }
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-content {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: #1f2937;
+    border: none;
+    color: #9ca3af;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover { color: #ffffff; }
+  }
+
+  .modal-icon {
+    width: 56px;
+    height: 56px;
+    background: rgba(0,208,132,0.1);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+
+    .material-icons { color: #00d084; font-size: 28px; }
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 10px;
+  }
+
+  .modal-description {
+    color: #9ca3af;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .modal-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    background: #1f2937;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .material-icons { color: #00d084; font-size: 20px; }
+
+      .info-label {
+        display: block;
+        font-size: 11px;
+        color: #6b7280;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+      }
+
+      .info-value {
+        font-size: 15px;
+        font-weight: 600;
+        color: #ffffff;
+      }
+    }
+  }
+
+  .modal-pieces {
+    margin-bottom: 24px;
+
+    h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: #d1d5db;
+
+        .material-icons { color: #00d084; font-size: 16px; }
+      }
+    }
+  }
+
+  .btn-commencer-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    background: #00d084;
+    color: #000000;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background 0.2s;
+
+    &:hover { background: #00a86b; }
+  }
+}

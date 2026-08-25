@@ -1,0 +1,47 @@
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="logo.png" alt="SénégalAdmin" class="brand-logo">
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-item">
+        <span class="material-icons">dashboard</span>
+        Dashboard
+      </a>
+      <a routerLink="/admin/utilisateurs" routerLinkActive="active" class="nav-item">
+        <span class="material-icons">people</span>
+        Utilisateurs
+      </a>
+      <a routerLink="/admin/types-demandes" routerLinkActive="active" class="nav-item">
+        <span class="material-icons">folder</span>
+        Types de demandes
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <a routerLink="/login" class="nav-item logout">
+        <span class="material-icons">logout</span>
+        Déconnexion
+      </a>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h2 class="topbar-title">
+          Espace Admin
+          <span>SÉNÉGALADMIN</span>
+        </h2>
+      </div>
+      <div class="topbar-right">
+        <div class="user-avatar">A</div>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,131 @@
+name: SénégalAdmin CI/CD Pipeline
+
+on:
+  push:
+    branches: [ front, main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  # Job 1 — Tests Backend Laravel
+  test-backend:
+      name: Tests Laravel
+      runs-on: ubuntu-latest
+
+      services:
+        postgres:
+          image: postgres:15
+          env:
+            POSTGRES_DB: suivi_extrait_test
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: password
+          ports:
+            - 5432:5432
+          options: >-
+            --health-cmd pg_isready
+            --health-interval 10s
+            --health-timeout 5s
+            --health-retries 5
+
+      steps:
+        - name: Récupérer le code
+          uses: actions/checkout@v3
+
+        - name: Installer PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: '8.2'
+            extensions: pdo, pdo_pgsql, mbstring, xml, curl, zip
+
+        - name: Installer les dépendances Laravel
+          working-directory: ./suivi_extrait
+          run: composer install --no-interaction --prefer-dist
+
+        - name: Créer le fichier .env
+          working-directory: ./suivi_extrait
+          run: |
+            cp .env.example .env
+            sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=pgsql/' .env
+            echo "DB_HOST=127.0.0.1" >> .env
+            echo "DB_PORT=5432" >> .env
+            echo "DB_DATABASE=suivi_extrait_test" >> .env
+            echo "DB_USERNAME=postgres" >> .env
+            echo "DB_PASSWORD=password" >> .env
+            php artisan key:generate
+
+        - name: Lancer les migrations
+          working-directory: ./suivi_extrait
+          run: |
+            php artisan migrate:fresh --force
+
+
+  # Job SonarQube
+  sonarqube:
+    name: Analyse SonarQube
+    runs-on: ubuntu-latest
+    needs: test-backend
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Analyse SonarCloud
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  # Job 2 — Build Frontend Angular
+  build-frontend:
+    name: Build Angular
+    runs-on: ubuntu-latest
+    needs: test-backend
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v3
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Installer les dépendances Angular
+        working-directory: ./suivi_estrait-frontend
+        run: npm install
+
+      - name: Build Angular
+        working-directory: ./suivi_estrait-frontend
+        run: npm run build
+
+ # Job 3 — Build Docker et push
+  docker-build:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: build-frontend
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v3
+
+      - name: Connexion Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build et push Backend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./suivi_extrait
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/senegaladmin-backend:latest
+
+      - name: Build et push Frontend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./suivi_estrait-frontend
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/senegaladmin-frontend:latest

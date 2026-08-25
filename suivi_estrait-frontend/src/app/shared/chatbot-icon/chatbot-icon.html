@@ -1,0 +1,34 @@
+<div class="chatbot-wrapper">
+
+  <!-- Bulle de message -->
+  <div class="chatbot-bubble" *ngIf="showBubble">
+    <button class="bubble-close" (click)="dismissBubble()">✕</button>
+    <div class="bubble-avatar">
+      <img src="avatar-abdoul.png" alt="Abdoul" onerror="this.src='https://ui-avatars.com/api/?name=Abdoul&background=00d084&color=000&size=48'">
+    </div>
+    <div class="bubble-content">
+      <p class="bubble-name">Abdoul</p>
+      <p class="bubble-message">
+        Bonjour 👋, je suis <strong>Abdoul</strong>, votre assistant pour vos démarches administratives. Comment puis-je vous aider ?
+      </p>
+      <div class="bubble-actions">
+        <button class="btn-yes" (click)="openChatbot()">
+          💬 Discuter avec Abdoul
+        </button>
+        <button class="btn-no" (click)="dismissBubble()">
+          Non merci
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Avatar flottant -->
+  <div class="chatbot-avatar" (click)="toggleBubble()">
+    <img
+      src="avatar-abdoul.png"
+      alt="Abdoul"
+      onerror="this.src='https://ui-avatars.com/api/?name=Abdoul&background=00d084&color=000&size=56'">
+    <span class="avatar-status"></span>
+  </div>
+
+</div>

@@ -1,0 +1,83 @@
+.historique-page {
+  max-width: 900px;
+}
+
+.page-header {
+  margin-bottom: 24px;
+
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 4px;
+  }
+
+  p {
+    color: #9ca3af;
+    font-size: 14px;
+  }
+}
+
+.historique-table {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  padding: 14px 20px;
+  background: #0f1629;
+  border-bottom: 1px solid #1f2937;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  padding: 16px 20px;
+  border-bottom: 1px solid #1f2937;
+  align-items: center;
+  transition: background 0.2s;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: #1a2235; }
+
+  .doc-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .doc-icon { color: #00d084; font-size: 20px; }
+
+    .doc-titre {
+      font-size: 14px;
+      font-weight: 500;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+
+    .doc-ref { font-size: 11px; color: #6b7280; }
+  }
+
+  .citoyen { font-size: 14px; color: #d1d5db; }
+  .date { font-size: 13px; color: #9ca3af; }
+  .agent { font-size: 13px; color: #9ca3af; }
+}
+
+.statut-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  width: fit-content;
+
+  &.green { background: rgba(0, 208, 132, 0.15); color: #00d084; }
+  &.red { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+}

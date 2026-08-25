@@ -1,0 +1,60 @@
+<div class="mes-demandes">
+  <div class="page-header">
+    <div>
+      <h1>Mes demandes</h1>
+      <p>Suivez l'avancement de vos dossiers en temps réel.</p>
+    </div>
+    <a routerLink="/user/nouvelle-demande" class="btn-new">
+      <span class="material-icons">add</span>
+      Nouvelle demande
+    </a>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <span class="material-icons">search</span>
+      <input type="text" [(ngModel)]="search" placeholder="Rechercher (référence, nom)">
+    </div>
+    <div class="filters">
+      <button *ngFor="let f of filters" [class.active]="activeFilter === f" (click)="setFilter(f)">
+        {{ f }}
+      </button>
+    </div>
+  </div>
+
+  <div class="loading-state" *ngIf="loading && demandes.length === 0">
+    <span class="material-icons">hourglass_empty</span>
+    <p>Chargement...</p>
+  </div>
+
+<div class="demandes-list" *ngIf="!loading || demandes.length > 0">
+
+  <div class="demandes-list" *ngIf="!loading">
+    <div class="demande-card" *ngFor="let d of filteredDemandes">
+      <div class="demande-left">
+        <div class="demande-icon">
+          <span class="material-icons">{{ getIcon(d.type_demande?.libelle) }}</span>
+        </div>
+        <div class="demande-info">
+          <div class="demande-title-row">
+            <h3>{{ d.type_demande?.libelle }}</h3>
+            <span class="statut-badge" [class]="getStatutColor(d.statut)">{{ d.statut }}</span>
+          </div>
+          <p class="demande-meta">Réf. {{ d.reference }} • {{ d.date_soumission | date:'dd/MM/yyyy' }}</p>
+        </div>
+      </div>
+      <div class="demande-right">
+        <div class="demande-prix">
+          <span class="prix">{{ d.type_demande?.frais }} FCFA</span>
+  
+        </div>
+        <span class="material-icons arrow">arrow_forward</span>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="filteredDemandes.length === 0">
+      <span class="material-icons">inbox</span>
+      <p>Aucune demande trouvée.</p>
+    </div>
+  </div>
+</div>

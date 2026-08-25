@@ -1,0 +1,79 @@
+<div class="user-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="assets/images/logo.png" alt="SénégalAdmin" class="brand-logo" routerLink="/accueil">
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/user/mes-demandes" routerLinkActive="active" class="nav-item">
+        <span class="material-icons">inbox</span>
+        Mes demandes
+      </a>
+      <a routerLink="/user/nouvelle-demande" routerLinkActive="active" class="nav-item">
+        <span class="material-icons">add</span>
+        Nouvelle demande
+      </a>
+      <a routerLink="/user/profil" routerLinkActive="active" class="nav-item">
+        <span class="material-icons">person</span>
+        Profil
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <a class="nav-item">
+        <span class="material-icons">headset_mic</span>
+        Support
+      </a>
+      <a routerLink="/login" class="nav-item logout">
+        <span class="material-icons">logout</span>
+        Déconnexion
+      </a>
+    </div>
+  </aside>
+
+  <!-- CONTENU -->
+  <div class="main-content">
+
+    <header class="topbar">
+  <div class="topbar-left">
+    <h2 class="topbar-title">
+      Téranga
+      <span>DIASPORA</span>
+    </h2>
+  </div>
+  <div class="topbar-right">
+    <div class="notif-wrapper">
+      <button class="notif-btn" (click)="toggleNotifs()">
+        <span class="material-icons">notifications</span>
+        <span class="notif-badge" *ngIf="notifCount > 0">{{ notifCount }}</span>
+      </button>
+      <div class="notif-dropdown" *ngIf="showNotifs">
+        <div class="notif-header">
+          <h4>Notifications</h4>
+          <span (click)="marquerToutLu()" style="cursor:pointer;color:#00d084;font-size:12px;">Tout marquer lu</span>
+        </div>
+        <div class="notif-item" *ngFor="let msg of messages">
+          <span class="material-icons">mail</span>
+          <div>
+            <p>{{ msg.contenu }}</p>
+            <span>{{ msg.date_envoi | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+        <div *ngIf="messages.length === 0" class="notif-empty">
+          Aucune notification
+        </div>
+      </div>
+    </div>
+    <div class="user-avatar">T</div>
+  </div>
+</header>
+
+    <!-- Page content -->
+    <div class="page-content">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+</div>

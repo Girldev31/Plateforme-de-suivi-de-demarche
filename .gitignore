@@ -1,0 +1,5 @@
+node_modules/ 
+suivi_estrait-frontend/node_modules/ 
+suivi_estrait-frontend/dist/ 
+suivi_extrait/vendor/ 
+suivi_extrait/.env 

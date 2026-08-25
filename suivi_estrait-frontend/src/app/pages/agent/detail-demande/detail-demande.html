@@ -1,0 +1,210 @@
+<div class="detail-page">
+
+  <div class="page-nav">
+    <button class="back-btn" (click)="retour()">
+      <span class="material-icons">arrow_back</span>
+      File d'attente
+    </button>
+  </div>
+
+  <div class="detail-header">
+    <div class="header-left">
+      <div class="doc-icon-lg">
+        <span class="material-icons">{{ demande.icon }}</span>
+      </div>
+      <div>
+        <h1>{{ demande.titre }}</h1>
+        <p class="ref">Réf. {{ demande.id }} • {{ demande.date }}</p>
+      </div>
+    </div>
+    <span class="statut-badge" [class]="demande.statutColor">{{ demande.statut }}</span>
+  </div>
+
+  <div class="detail-grid">
+
+    <!-- COLONNE GAUCHE -->
+    <div class="col-left">
+
+      <!-- Infos citoyen -->
+      <div class="detail-card">
+        <h3>
+          <span class="material-icons">person</span>
+          Informations du citoyen
+        </h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Nom complet</span>
+            <span class="info-value">{{ demande.citoyen }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email</span>
+            <span class="info-value">{{ demande.email }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Téléphone</span>
+            <span class="info-value">{{ demande.telephone }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pays de résidence</span>
+            <span class="info-value">{{ demande.pays }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Infos demande -->
+      <div class="detail-card">
+        <h3>
+          <span class="material-icons">description</span>
+          Informations de la demande
+        </h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Date de naissance</span>
+            <span class="info-value">{{ demande.informations.dateNaissance }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Lieu de naissance</span>
+            <span class="info-value">{{ demande.informations.lieuNaissance }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Nom du père</span>
+            <span class="info-value">{{ demande.informations.nomPere }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Nom de la mère</span>
+            <span class="info-value">{{ demande.informations.nomMere }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pièces justificatives -->
+      <div class="detail-card">
+        <h3>
+          <span class="material-icons">attach_file</span>
+          Pièces justificatives
+        </h3>
+        <div class="pieces-list">
+          <div class="piece-item" *ngFor="let piece of demande.pieces">
+            <div class="piece-left">
+              <span class="material-icons piece-file">picture_as_pdf</span>
+              <div>
+                <p class="piece-nom">{{ piece.nom }}</p>
+                <p class="piece-fichier">{{ piece.fichier }}</p>
+              </div>
+            </div>
+            <div class="piece-actions">
+              <button class="btn-voir-piece">
+                <span class="material-icons">visibility</span>
+              </button>
+              <span class="piece-statut" [class.valide]="piece.valide" [class.invalide]="!piece.valide">
+                <span class="material-icons">{{ piece.valide ? 'check_circle' : 'cancel' }}</span>
+                {{ piece.valide ? 'Valide' : 'À vérifier' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paiement -->
+      <div class="detail-card">
+        <h3>
+          <span class="material-icons">payment</span>
+          Paiement
+        </h3>
+        <div class="payment-status">
+          <span class="material-icons" [class.paid]="demande.paye">
+            {{ demande.paye ? 'check_circle' : 'cancel' }}
+          </span>
+          <span>{{ demande.prix }} — {{ demande.paye ? 'Payé' : 'Non payé' }}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- COLONNE DROITE -->
+    <div class="col-right">
+
+      <!-- Actions principales -->
+      <div class="detail-card actions-card">
+        <h3>
+          <span class="material-icons">settings</span>
+          Actions
+        </h3>
+        <div class="action-buttons">
+          <button class="btn-valider" (click)="validerDemande()">
+            <span class="material-icons">check_circle</span>
+            Valider la demande
+          </button>
+          <button class="btn-rejeter" (click)="rejeterDemande()">
+            <span class="material-icons">cancel</span>
+            Rejeter la demande
+          </button>
+        </div>
+
+        <div class="statut-modifier">
+          <label>Modifier le statut</label>
+          <div class="statut-select-row">
+            <select [(ngModel)]="statutSelectionne">
+              <option *ngFor="let s of statuts" [value]="s">{{ s }}</option>
+            </select>
+            <button class="btn-appliquer" (click)="modifierStatut()">
+              Appliquer
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification citoyen -->
+      <div class="detail-card">
+        <h3>
+          <span class="material-icons">send</span>
+          Notifier le citoyen
+        </h3>
+        <textarea
+          [(ngModel)]="messageNotif"
+          placeholder="Écrivez un message pour le citoyen..."
+          rows="3">
+        </textarea>
+       <button class="btn-envoyer" (click)="demanderPieces()">
+          <span class="material-icons">send</span>
+          Envoyer la notification
+        </button>
+      </div>
+
+      <!-- Observation -->
+      <div class="detail-card">
+        <h3>
+          <span class="material-icons">edit_note</span>
+          Ajouter une observation
+        </h3>
+        <textarea
+          [(ngModel)]="observation"
+          placeholder="Ajoutez une observation interne..."
+          rows="3">
+        </textarea>
+       <button class="btn-observation" (click)="modifierStatut()">
+          <span class="material-icons">add</span>
+          Ajouter
+        </button>
+      </div>
+
+      <!-- Historique -->
+      <div class="detail-card">
+        <h3>
+          <span class="material-icons">history</span>
+          Historique du traitement
+        </h3>
+        <div class="historique-list">
+          <div class="historique-item" *ngFor="let h of demande.historique">
+            <div class="historique-dot"></div>
+            <div class="historique-content">
+              <p class="historique-action">{{ h.action }}</p>
+              <p class="historique-meta">{{ h.date }} — {{ h.auteur }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

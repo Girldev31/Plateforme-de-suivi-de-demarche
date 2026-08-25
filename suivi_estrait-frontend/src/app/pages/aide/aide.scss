@@ -1,0 +1,160 @@
+.aide-page {
+  padding-top: 80px;
+  min-height: 100vh;
+  background: #0a0e1a;
+}
+
+.aide-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 60px 48px;
+}
+
+.aide-header {
+  text-align: center;
+  margin-bottom: 48px;
+
+  .badge {
+    font-size: 12px;
+    font-weight: 600;
+    color: #00d084;
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 12px;
+  }
+
+  p {
+    color: #9ca3af;
+    font-size: 15px;
+  }
+}
+
+.aide-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.aide-card {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 14px;
+  padding: 28px 24px;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: #00d084;
+  }
+
+  .card-icon {
+    font-size: 28px;
+    margin-bottom: 14px;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: #9ca3af;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .btn-discuss {
+    background: #00d084;
+    color: #000000;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #00a86b;
+    }
+  }
+
+  .btn-video {
+    background: transparent;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 1px solid #1f2937;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: #00d084;
+      color: #00d084;
+    }
+  }
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 10px;
+  padding: 20px 24px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: #374151;
+  }
+
+  &.open {
+    border-color: #00d084;
+  }
+
+  .faq-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .faq-question {
+      font-size: 15px;
+      font-weight: 500;
+      color: #ffffff;
+    }
+
+    .faq-icon {
+      color: #9ca3af;
+      font-size: 12px;
+    }
+  }
+
+  .faq-answer {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #1f2937;
+
+    p {
+      color: #9ca3af;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+  }
+}
