@@ -46,7 +46,12 @@
         </div>
       </div>
 
-      <button class="btn-submit">Créer mon compte</button>
+          <div class="error-message" *ngIf="error" style="color:#ef4444;margin-bottom:12px;">
+            {{ error }}
+          </div>
+        <button class="btn-submit" (click)="register()" [disabled]="loading">
+          {{ loading ? 'Création en cours...' : 'Créer mon compte' }}
+        </button>
 
       <p class="form-footer">
         Déjà un compte ?
